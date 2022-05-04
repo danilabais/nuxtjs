@@ -1,11 +1,11 @@
 <template>
   <a-layout style="min-height: 100vh">
-    <a-layout-sider collapsible>
+    <!-- <a-layout-sider collapsible>
       <div class="logo" />
       <MainMenu/>
-    </a-layout-sider>
+    </a-layout-sider> -->
     <a-layout>
-      <a-layout-header style="background: #fff; padding: 0; text-align:center"><a-typography-title :style="{fontSize:'24px'}">Переводчик</a-typography-title></a-layout-header>
+      <a-layout-header style="background: #fff; padding: 0; text-align:center"><h1 :style="{fontSize:'24px'}">Переводчик</h1></a-layout-header>
       <MainContent/>
       <MainFooter/>
     </a-layout>

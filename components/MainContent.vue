@@ -1,8 +1,8 @@
 <template>
-  <a-layout-content style="margin: 0 16px">
+  <a-layout-content style="margin: 0 310px">
     <div
       :style="{
-        padding: '24px',
+        padding: '50px',
         background: '#fff',
         minHeight: '360px',
         marginTop: '50px',
@@ -15,34 +15,37 @@
             show-search
             placeholder="Язык перевода"
             style="width: 100%"
+            v-model:value="fromLang"
             :options="options"
-            v-on:change="setFromLang"
+            
           >
-            <v-option> Ангийский </v-option>
           </a-select>
         </a-affix>
         <a-divider  />
         <a-textarea
-          aria-required
           v-model="text"
           :maxLength="250"
           allowClear
           placeholder="Введите текст для перевода"
-          v-on:change="autoTranslate"
+          v-on:input="autoTranslate"
           :rows="6"
+          v-on:pressEnter="pressEnter"
         />
         <div class="control__container">
-          <div class="switch__container">
-            <a-switch id="switch" 
-            v-model="autoTranslateSwitch"
-            checked-children="On"
-            un-checked-children="Off"
-            />
-            <label for="switch">Автоперевод</label>
-          </div>
+          <a-tooltip placement="top" title="Включить перевод при наборе">
+            <div class="switch__container">
+              <a-switch id="switch" 
+              v-model="autoTranslateSwitch"
+              v-on:change="switchOn"
+              checked-children="On"
+              un-checked-children="Off"
+              />
+              <label for="switch">Автоперевод</label>
+            </div>
+          </a-tooltip>
           
           <a-button
-            :disabled="!Boolean(text) || !Boolean(toLang) || !Boolean(fromLang)"
+            :disabled="!Boolean(text) || !Boolean(toLang) || !Boolean(fromLang) || !Boolean(isActiveBtn)"
             type="primary"
             shape="round"
             v-on:click="translate"
@@ -51,27 +54,35 @@
           </a-button>
         </div>
       </a-card>
+      <a-tooltip placement="top" title="Поменять местами">
       <button class="swap__btn" v-on:click="swap">
      <SwapIcon/>
       </button>
+      </a-tooltip>
       <a-card>
         <a-select
           show-search
           placeholder="Язык вывода"
           style="width: 100%"
           :options="options"
-          ref="setToLang"
-          v-on:change="setToLang"
+          v-model="toLang"
         >
         </a-select>
-        <div style="user-select: none"><br /><br /></div>
-        <a-typography-paragrap> {{translatedText}} </a-typography-paragrap>
+        <a-tooltip  placement="top" :title="isCopy?'Скопировано':'Скопировать'">
+        <a-card v-on:click="copyText" class="copyText">
+        <a-skeleton :loading="loading" active >
+        <p>{{translatedText}}</p>
+        </a-skeleton>
+        </a-card>
+        </a-tooltip>
       </a-card>
     </div>
   </a-layout-content>
 </template>
 
 <script lang="ts">
+
+
 import Vue from 'vue'
 export default Vue.extend({
   data() {
@@ -105,12 +116,14 @@ export default Vue.extend({
       ] as Array<Object>,
 
       timer: null as any,
-
-      fromLang: '' as String,
-      toLang: '' as String,
+      fromLang: undefined  as String | undefined,
+      toLang: undefined as String | undefined,
       text: '' as String,
       containerRef: this.$refs.containerRef,
       autoTranslateSwitch:false as Boolean,
+      loading:false as Boolean,
+      isActiveBtn:true as Boolean,
+      isCopy:false as Boolean,
     }
   },
   methods: {
@@ -121,6 +134,11 @@ export default Vue.extend({
       this.toLang = e
     },
     translate() {
+      if (Boolean(!this.autoTranslateSwitch)){
+        this.timerTranslate()
+        this.isActiveBtn=false
+      }
+      this.loading=true
       this.$store.dispatch('translate', {
         text: this.text,
         toLang: this.toLang,
@@ -129,30 +147,42 @@ export default Vue.extend({
       
     },
     swap() {
-      this.$refs.setToLang.value = 'en'
+      [this.toLang,this.fromLang]=[this.fromLang,this.toLang]
     },
       autoTranslate() {
       if (Boolean(this.text) && Boolean(this.toLang) && Boolean(this.fromLang) && Boolean(this.fromLang) && Boolean(this.autoTranslateSwitch)) {
-        
         clearTimeout(this.timer)
-       
        this.timer = setTimeout(() => {
          this.translate()
        }, 1000)
-          
-            
-            // console.log(this.timer)
-
-
-
-
-
-
       }
-    }
+    },
+      switchOn(e:boolean){
+        if (Boolean(this.text) && Boolean(this.toLang) && Boolean(this.fromLang) && Boolean(this.fromLang) && Boolean(this.autoTranslateSwitch)) {
+          this.translate()
+        } 
+      },
+      pressEnter(){
+        if (Boolean(this.text) && Boolean(this.toLang) && Boolean(this.fromLang) && Boolean(this.fromLang)) {
+        this.translate()
+        }
+      },
+      timerTranslate() {
+        setTimeout((()=>this.isActiveBtn=true),3000)
+      },
+      copyText(){
+        try {
+          navigator.clipboard.writeText(this.translatedText)
+          this.isCopy=true
+        } catch (error) {
+          console.log(error);
+        }
+      }
   },
   computed: {
     translatedText(){
+      this.loading=false
+      this.isCopy=false
       return this.$store.getters.translatedText
     }
   }
@@ -181,5 +211,12 @@ export default Vue.extend({
   border: none;
   background: none;
   cursor: pointer;
+}
+.text__area {
+  resize: none !important; 
+}
+.copyText {
+  cursor: pointer;
+  margin-top: 50px;
 }
 </style>
