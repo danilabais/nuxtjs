@@ -1,11 +1,11 @@
 
 export const state = () => ({
-  counter: 0,
+  translatedText:'',
 })
 
 export const mutations = {
-  increment(state) {
-    state.counter++
+  SET_TRANSLATED_TEXT(state,payload) {
+    state.translatedText=payload
   },
 }
 
@@ -22,9 +22,14 @@ export const actions = {
         }),
         headers: { "Content-Type": "application/json" }
       });
-    console.log(await res.json())  
-    
-    
+      let translatedText=await res.json()
+    commit('SET_TRANSLATED_TEXT',translatedText)  
+    console.log(translatedText)
     
     }    
+}
+
+
+export const getters = {
+  translatedText:(state)=>state.translatedText.translatedText
 }
