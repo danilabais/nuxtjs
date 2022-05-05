@@ -45,6 +45,7 @@
           </a-tooltip>
           
           <a-button
+          @click="openNotification"
             :disabled="!Boolean(text) || !Boolean(toLang) || !Boolean(fromLang) || !Boolean(isActiveBtn)"
             type="primary"
             shape="round"
@@ -81,9 +82,9 @@
 </template>
 
 <script lang="ts">
-
-
 import Vue from 'vue'
+import { notification } from 'ant-design-vue';
+
 export default Vue.extend({
   data() {
     return {
@@ -158,9 +159,17 @@ export default Vue.extend({
       }
     },
       switchOn(e:boolean){
+        e?this.openNotification():null
         if (Boolean(this.text) && Boolean(this.toLang) && Boolean(this.fromLang) && Boolean(this.fromLang) && Boolean(this.autoTranslateSwitch)) {
           this.translate()
         } 
+      },
+      openNotification() {
+        notification['success']({
+        message: 'Автоперевод успешно включен!',
+        description: 'Теперь можно вводить текст и переводчик автоматически будет переводить',
+        duration:5,
+      });
       },
       pressEnter(){
         if (Boolean(this.text) && Boolean(this.toLang) && Boolean(this.fromLang) && Boolean(this.fromLang)) {
