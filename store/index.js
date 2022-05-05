@@ -11,7 +11,6 @@ export const mutations = {
 
 export const actions = {
     async translate({commit},payload){
-      console.log(payload)
       const res = await fetch("https://libretranslate.de/translate", {
         method: "POST",
         body: JSON.stringify({
