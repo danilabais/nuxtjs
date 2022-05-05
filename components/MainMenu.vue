@@ -4,6 +4,9 @@
           <nuxt-link to="/">Переводчик</nuxt-link>
         </a-menu-item>
         <a-menu-item key="2">
+           <nuxt-link to="/quotes">Цитатник</nuxt-link>
+        </a-menu-item>
+        <a-menu-item key="3">
            <nuxt-link to="/lol">Пустая страница</nuxt-link>
         </a-menu-item>
       </a-menu>

@@ -45,7 +45,6 @@
           </a-tooltip>
           
           <a-button
-          @click="openNotification"
             :disabled="!Boolean(text) || !Boolean(toLang) || !Boolean(fromLang) || !Boolean(isActiveBtn)"
             type="primary"
             shape="round"
@@ -69,7 +68,7 @@
           v-model="toLang"
         >
         </a-select>
-        <a-tooltip  placement="top" :title="isCopy?'Скопировано':'Скопировать'">
+        <a-tooltip v-if="translatedText"  placement="top" :title="isCopy?'Скопировано':'Скопировать'">
         <a-card v-on:click="copyText" class="copyText">
         <a-skeleton :loading="loading" active >
         <p>{{translatedText}}</p>
