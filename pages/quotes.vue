@@ -12,9 +12,9 @@
 import Vue from 'vue'
 export default Vue.extend({
  
-    async asyncData() {
-        const res = await fetch('https://api.quotable.io/quotes')
-        const quotes = (await res.json()).results
+    async asyncData({ $axios }) {
+        const res = await $axios.$get('https://api.quotable.io/quotes')
+        const quotes=res.results
         return {quotes}
     },
 })

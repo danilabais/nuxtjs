@@ -11,20 +11,14 @@ export const mutations = {
 
 export const actions = {
     async translate({commit},payload){
-      const res = await fetch("https://libretranslate.de/translate", {
-        method: "POST",
-        body: JSON.stringify({
+      const translatedText = await this.$axios.$post("/translate", {
           q: payload.text,
           source: payload.fromLang,
           target:  payload.toLang,
           format: "text"
-        }),
-        headers: { "Content-Type": "application/json" }
-      });
-      let translatedText=await res.json()
+    })
+     
     commit('SET_TRANSLATED_TEXT',translatedText)  
-    console.log(translatedText)
-    
     }    
 }
 

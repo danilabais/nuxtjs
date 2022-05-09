@@ -1,5 +1,6 @@
 <template>
-  <a-card :title="item.author" style="width: 300px">
+
+  <a-card :title="item.author" style="width: 300px; min-height:200px">
     <template #extra><a href="#">Подробнее</a></template>
     <p>{{ item.content }}</p>
     <a-button class="card__btn"  v-on:click="translate">Перевести</a-button>
@@ -41,5 +42,10 @@ export default Vue.extend({
 <style>
 .card__btn {
   float: right;
+    position: absolute;
+    bottom: 0;
+    margin: 15px;
+    right: 0;
+
 }
 </style>
