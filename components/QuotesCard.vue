@@ -1,16 +1,15 @@
 <template>
-
-  <a-card :title="item.author" style="width: 300px; min-height:200px">
+  <a-card :title="item.author" style="width: 350px; min-height: 250px">
     <template #extra><a href="#">Подробнее</a></template>
     <p>{{ item.content }}</p>
-    <a-button class="card__btn"  v-on:click="translate">Перевести</a-button>
+    <a-button class="card__btn" v-on:click="translate">Перевести</a-button>
   </a-card>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 export default Vue.extend({
-     props: {
+  props: {
     item: Object,
   },
   methods: {
@@ -20,32 +19,28 @@ export default Vue.extend({
     //     }
     // },
     async translate() {
-       const res = await fetch("https://libretranslate.de/translate", {
-        method: "POST",
-        body: JSON.stringify({
+      const res = await this.$axios.$post(
+        'https://libretranslate.de/translate',
+        {
           q: this.item.content,
-          source: "en",
-          target:  "ru",
-          format: "text"
-        }),
-        headers: { "Content-Type": "application/json" }
-      });
-      let translatedText=await res.json()
-      this.item.content = translatedText.translatedText
-    
+          source: 'en',
+          target: 'ru',
+          format: 'text',
+        }
+      )
+
+      this.item.content = res.translatedText
     },
   },
 })
 </script>
 
-
 <style>
 .card__btn {
   float: right;
-    position: absolute;
-    bottom: 0;
-    margin: 15px;
-    right: 0;
-
+  position: absolute;
+  bottom: 0;
+  margin: 15px;
+  right: 0;
 }
 </style>
