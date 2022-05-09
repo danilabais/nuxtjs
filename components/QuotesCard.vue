@@ -1,6 +1,6 @@
 <template>
   <a-card :title="item.author" style="width: 350px; min-height: 250px">
-    <template #extra><a href="#">Подробнее</a></template>
+    <template #extra><a v-on:click="toPage(item._id)">Подробнее</a></template>
     <p>{{ item.content }}</p>
     <a-button class="card__btn" v-on:click="translate">Перевести</a-button>
   </a-card>
@@ -13,15 +13,8 @@ export default Vue.extend({
     item: Object,
   },
   methods: {
-    // data(){
-    //     return {
-    //         buttonText: 'Перевести' as String
-    //     }
-    // },
     async translate() {
-      const res = await this.$axios.$post(
-        'https://libretranslate.de/translate',
-        {
+      const res = await this.$axios.$post("/translate",{
           q: this.item.content,
           source: 'en',
           target: 'ru',
@@ -31,6 +24,9 @@ export default Vue.extend({
 
       this.item.content = res.translatedText
     },
+    toPage(e){
+      this.$router.push('/quotes/'+e)
+    }
   },
 })
 </script>

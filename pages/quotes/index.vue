@@ -1,9 +1,11 @@
 <template>
   <div>
+    
       <h1 class="quotes__title">Цитатник</h1>
       <div class="quotes__wrapper">
             <QuotesCard :title="item.author" v-for="item in quotes" :item="item" :key="item._id"/>
       </div>
+      <a-pagination v-on:change="chagePage" v-model="current" :total="50" show-less-items />
   </div>
 </template>
 
@@ -17,6 +19,16 @@ export default Vue.extend({
         const quotes=res.results
         return {quotes}
     },
+    data() {
+        return {
+            current:1,
+        }
+    },
+    methods: {
+        chagePage(e) {
+        }
+    }
+
 })
 </script>
 
